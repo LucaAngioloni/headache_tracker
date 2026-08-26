@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Headache diary"
+  },
+  "nav": {
+    "episodes": "Episodes",
+    "calendar": "Calendar",
+    "stats": "Stats",
+    "more": "More",
+    "medicines": "Medicines",
+    "triggers": "Triggers",
+    "logout": "Log out"
+  },
+  "auth": {
+    "login": "Log in",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "error": "Invalid credentials"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "loading": "Loading…",
+    "empty": "No data",
+    "unknown": "Unknown",
+    "search": "Search",
+    "filters": "Filters",
+    "from": "From",
+    "to": "To",
+    "apply": "Apply",
+    "reset": "Reset",
+    "confirmDelete": "Delete this item?",
+    "language": "Language",
+    "close": "Close",
+    "back": "Back",
+    "error": "Something went wrong"
+  },
+  "episode": {
+    "title": "Episodes",
+    "new": "New episode",
+    "edit": "Edit episode",
+    "date": "Date",
+    "pain": "Pain",
+    "notes": "Notes",
+    "doses": "Doses",
+    "addDose": "Add dose",
+    "medicine": "Medicine",
+    "quantity": "Quantity",
+    "doseNote": "Dose note",
+    "triggers": "Triggers",
+    "saveAndAdd": "Save and add new",
+    "painUnknown": "Unknown",
+    "needDose": "At least one dose is required",
+    "needMedicine": "Create a medicine first"
+  },
+  "medicine": {
+    "title": "Medicines",
+    "new": "New medicine",
+    "name": "Name",
+    "ingredient": "Active ingredient",
+    "unit": "Unit",
+    "inUse": "Medicine in use, cannot delete"
+  },
+  "trigger": {
+    "title": "Triggers",
+    "new": "New trigger",
+    "name": "Name"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "addForDay": "Add episode"
+  },
+  "stats": {
+    "title": "Statistics",
+    "episodes": "Episodes",
+    "avgPain": "Average pain",
+    "medianPain": "Median pain",
+    "avgGap": "Avg days between",
+    "currentStreak": "Headache-free now",
+    "longestStreak": "Longest streak",
+    "secondDose": "Second dose",
+    "byMonth": "By month",
+    "byWeek": "By week",
+    "medicines": "Medicines",
+    "triggers": "Triggers"
+  }
+}

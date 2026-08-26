@@ -1,0 +1,5 @@
+-r production.txt
+
+pytest  # https://github.com/pytest-dev/pytest
+pytest-django  # https://github.com/pytest-dev/pytest-django
+ruff  # https://github.com/astral-sh/ruff

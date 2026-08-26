@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Diario cefalea"
+  },
+  "nav": {
+    "episodes": "Episodi",
+    "calendar": "Calendario",
+    "stats": "Stats",
+    "more": "Altro",
+    "medicines": "Farmaci",
+    "triggers": "Trigger",
+    "logout": "Esci"
+  },
+  "auth": {
+    "login": "Accedi",
+    "username": "Utente",
+    "password": "Password",
+    "submit": "Entra",
+    "error": "Credenziali non valide"
+  },
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "loading": "Caricamento…",
+    "empty": "Nessun dato",
+    "unknown": "Sconosciuto",
+    "search": "Cerca",
+    "filters": "Filtri",
+    "from": "Da",
+    "to": "A",
+    "apply": "Applica",
+    "reset": "Reset",
+    "confirmDelete": "Eliminare questo elemento?",
+    "language": "Lingua",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "error": "Qualcosa è andato storto"
+  },
+  "episode": {
+    "title": "Episodi",
+    "new": "Nuovo episodio",
+    "edit": "Modifica episodio",
+    "date": "Data",
+    "pain": "Dolore",
+    "notes": "Note",
+    "doses": "Dosi",
+    "addDose": "Aggiungi dose",
+    "medicine": "Farmaco",
+    "quantity": "Quantità",
+    "doseNote": "Nota dose",
+    "triggers": "Trigger",
+    "saveAndAdd": "Salva e aggiungi nuovo",
+    "painUnknown": "Sconosciuto",
+    "needDose": "Serve almeno una dose",
+    "needMedicine": "Crea prima un farmaco"
+  },
+  "medicine": {
+    "title": "Farmaci",
+    "new": "Nuovo farmaco",
+    "name": "Nome",
+    "ingredient": "Principio attivo",
+    "unit": "Unità",
+    "inUse": "Farmaco in uso, non eliminabile"
+  },
+  "trigger": {
+    "title": "Trigger",
+    "new": "Nuovo trigger",
+    "name": "Nome"
+  },
+  "calendar": {
+    "title": "Calendario",
+    "today": "Oggi",
+    "addForDay": "Aggiungi episodio"
+  },
+  "stats": {
+    "title": "Statistiche",
+    "episodes": "Episodi",
+    "avgPain": "Dolore medio",
+    "medianPain": "Mediana dolore",
+    "avgGap": "Giorni medi tra episodi",
+    "currentStreak": "Giorni liberi ora",
+    "longestStreak": "Streak più lunga",
+    "secondDose": "Seconda dose",
+    "byMonth": "Per mese",
+    "byWeek": "Per settimana",
+    "medicines": "Farmaci",
+    "triggers": "Trigger"
+  }
+}

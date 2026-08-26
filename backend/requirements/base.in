@@ -1,0 +1,6 @@
+django>=5.2,<5.3  # https://www.djangoproject.com/  # 5.2 LTS; next LTS is 6.2 (Apr 2027)
+djangorestframework  # https://github.com/encode/django-rest-framework
+djangorestframework-simplejwt  # https://github.com/jazzband/djangorestframework-simplejwt
+django-filter  # https://github.com/carltongibson/django-filter
+psycopg[binary]  # https://www.psycopg.org/
+python-dotenv  # https://github.com/theskumar/python-dotenv
