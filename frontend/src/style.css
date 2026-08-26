@@ -21,11 +21,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family:
-    "Source Sans 3",
-    "Segoe UI",
-    system-ui,
-    sans-serif;
+  font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
 }
 
 button,

@@ -4,7 +4,13 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { api } from "@/api/client";
 import DateInput from "@/components/DateInput.vue";
-import type { Episode, EpisodeWrite, Medicine, Paginated, Trigger } from "@/types";
+import type {
+  Episode,
+  EpisodeWrite,
+  Medicine,
+  Paginated,
+  Trigger,
+} from "@/types";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -18,10 +24,14 @@ const notes = ref("");
 const selectedTriggers = ref<number[]>([]);
 const triggerQuery = ref("");
 const showTriggerSuggestions = ref(false);
-const doses = ref<EpisodeWrite["doses"]>([{ medicine: 0, quantity: 1, note: "" }]);
+const doses = ref<EpisodeWrite["doses"]>([
+  { medicine: 0, quantity: 1, note: "" },
+]);
 const error = ref("");
 const loading = ref(false);
-const editId = computed(() => (route.params.id ? Number(route.params.id) : null));
+const editId = computed(() =>
+  route.params.id ? Number(route.params.id) : null,
+);
 
 async function loadCatalogs() {
   const [m, tr] = await Promise.all([
@@ -37,7 +47,8 @@ async function loadCatalogs() {
 
 async function loadEpisode() {
   if (!editId.value) {
-    if (typeof route.query.date === "string") occurredOn.value = route.query.date;
+    if (typeof route.query.date === "string")
+      occurredOn.value = route.query.date;
     return;
   }
   const { data } = await api.get<Episode>(`/episodes/${editId.value}/`);
@@ -68,7 +79,9 @@ function removeDose(index: number) {
 const triggerSuggestions = computed(() => {
   const q = triggerQuery.value.trim().toLowerCase();
   return triggers.value.filter(
-    (t) => !selectedTriggers.value.includes(t.id) && (!q || t.name.toLowerCase().includes(q)),
+    (t) =>
+      !selectedTriggers.value.includes(t.id) &&
+      (!q || t.name.toLowerCase().includes(q)),
   );
 });
 
@@ -89,7 +102,9 @@ function selectTrigger(id: number) {
 async function addTriggerFromQuery() {
   const name = triggerQuery.value.trim();
   if (!name) return;
-  const existing = triggers.value.find((t) => t.name.toLowerCase() === name.toLowerCase());
+  const existing = triggers.value.find(
+    (t) => t.name.toLowerCase() === name.toLowerCase(),
+  );
   if (existing) {
     selectTrigger(existing.id);
     return;
@@ -103,7 +118,11 @@ function onTriggerKeydown(e: KeyboardEvent) {
   if (e.key === "Enter") {
     e.preventDefault();
     void addTriggerFromQuery();
-  } else if (e.key === "Backspace" && !triggerQuery.value && selectedTriggers.value.length) {
+  } else if (
+    e.key === "Backspace" &&
+    !triggerQuery.value &&
+    selectedTriggers.value.length
+  ) {
     selectedTriggers.value.pop();
   }
 }
@@ -156,7 +175,9 @@ function resetForm() {
   notes.value = "";
   selectedTriggers.value = [];
   triggerQuery.value = "";
-  doses.value = [{ medicine: medicines.value[0]?.id || 0, quantity: 1, note: "" }];
+  doses.value = [
+    { medicine: medicines.value[0]?.id || 0, quantity: 1, note: "" },
+  ];
   error.value = "";
 }
 
@@ -168,18 +189,38 @@ onMounted(async () => {
 
 <template>
   <div class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ editId ? t("episode.edit") : t("episode.new") }}</h1>
+    <h1 class="text-xl font-semibold">
+      {{ editId ? t("episode.edit") : t("episode.new") }}
+    </h1>
     <form class="grid gap-4" @submit.prevent="submit()">
       <label class="grid gap-1 text-sm">
         {{ t("episode.date") }}
-        <DateInput v-model="occurredOn" required class="rounded-xl border border-[var(--line)] px-3 py-2" />
+        <DateInput
+          v-model="occurredOn"
+          required
+          class="rounded-xl border border-[var(--line)] px-3 py-2"
+        />
       </label>
       <div class="grid gap-1 text-sm">
         <span>{{ t("episode.pain") }}</span>
         <div class="flex items-center gap-3">
-          <button type="button" class="h-10 w-10 rounded-full border" @click="bumpPain(-1)">−</button>
-          <span class="min-w-10 text-center text-lg font-semibold">{{ pain ?? t("episode.painUnknown") }}</span>
-          <button type="button" class="h-10 w-10 rounded-full border" @click="bumpPain(1)">+</button>
+          <button
+            type="button"
+            class="h-10 w-10 rounded-full border"
+            @click="bumpPain(-1)"
+          >
+            −
+          </button>
+          <span class="min-w-10 text-center text-lg font-semibold">{{
+            pain ?? t("episode.painUnknown")
+          }}</span>
+          <button
+            type="button"
+            class="h-10 w-10 rounded-full border"
+            @click="bumpPain(1)"
+          >
+            +
+          </button>
         </div>
       </div>
       <div class="grid gap-2">
@@ -191,7 +232,14 @@ onMounted(async () => {
             class="inline-flex items-center gap-2 rounded-full border border-[var(--accent)] bg-[var(--accent-soft)] px-3 py-1 text-sm"
           >
             {{ tr.name }}
-            <button type="button" class="text-[var(--muted)]" :aria-label="`${t('common.delete')} ${tr.name}`" @click="removeTrigger(tr.id)">×</button>
+            <button
+              type="button"
+              class="text-[var(--muted)]"
+              :aria-label="`${t('common.delete')} ${tr.name}`"
+              @click="removeTrigger(tr.id)"
+            >
+              ×
+            </button>
           </span>
         </div>
         <div class="relative">
@@ -209,7 +257,12 @@ onMounted(async () => {
             class="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-xl border border-[var(--line)] bg-[var(--card)] py-1 text-sm shadow"
           >
             <li v-for="tr in triggerSuggestions" :key="tr.id">
-              <button type="button" class="block w-full px-3 py-1.5 text-left hover:bg-[var(--line)]" @mousedown.prevent @click="selectTrigger(tr.id)">
+              <button
+                type="button"
+                class="block w-full px-3 py-1.5 text-left hover:bg-[var(--line)]"
+                @mousedown.prevent
+                @click="selectTrigger(tr.id)"
+              >
                 {{ tr.name }}
               </button>
             </li>
@@ -218,28 +271,72 @@ onMounted(async () => {
       </div>
       <div class="grid gap-2">
         <p class="text-sm font-medium">{{ t("episode.doses") }}</p>
-        <div v-for="(dose, i) in doses" :key="i" class="grid gap-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
-          <select v-model.number="dose.medicine" class="rounded-xl border border-[var(--line)] px-3 py-2">
-            <option v-for="m in medicines" :key="m.id" :value="m.id">{{ m.name }} ({{ m.unit }})</option>
+        <div
+          v-for="(dose, i) in doses"
+          :key="i"
+          class="grid gap-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+        >
+          <select
+            v-model.number="dose.medicine"
+            class="rounded-xl border border-[var(--line)] px-3 py-2"
+          >
+            <option v-for="m in medicines" :key="m.id" :value="m.id">
+              {{ m.name }} ({{ m.unit }})
+            </option>
           </select>
-          <input v-model="dose.quantity" type="number" step="0.25" min="0.25" class="rounded-xl border border-[var(--line)] px-3 py-2" :placeholder="t('episode.quantity')" />
-          <input v-model="dose.note" class="rounded-xl border border-[var(--line)] px-3 py-2" :placeholder="t('episode.doseNote')" />
-          <button v-if="doses.length > 1" type="button" class="text-left text-sm text-red-700" @click="removeDose(i)">
+          <input
+            v-model="dose.quantity"
+            type="number"
+            step="0.25"
+            min="0.25"
+            class="rounded-xl border border-[var(--line)] px-3 py-2"
+            :placeholder="t('episode.quantity')"
+          />
+          <input
+            v-model="dose.note"
+            class="rounded-xl border border-[var(--line)] px-3 py-2"
+            :placeholder="t('episode.doseNote')"
+          />
+          <button
+            v-if="doses.length > 1"
+            type="button"
+            class="text-left text-sm text-red-700"
+            @click="removeDose(i)"
+          >
             {{ t("common.delete") }}
           </button>
         </div>
-        <button type="button" class="rounded-xl border px-3 py-2 text-sm" @click="addDose">{{ t("episode.addDose") }}</button>
+        <button
+          type="button"
+          class="rounded-xl border px-3 py-2 text-sm"
+          @click="addDose"
+        >
+          {{ t("episode.addDose") }}
+        </button>
       </div>
       <label class="grid gap-1 text-sm">
         {{ t("episode.notes") }}
-        <textarea v-model="notes" rows="3" class="rounded-xl border border-[var(--line)] px-3 py-2" />
+        <textarea
+          v-model="notes"
+          rows="3"
+          class="rounded-xl border border-[var(--line)] px-3 py-2"
+        />
       </label>
       <p v-if="error" class="text-sm text-red-700">{{ error }}</p>
       <div class="grid gap-3 sm:grid-cols-2">
-        <button class="rounded-xl bg-[var(--accent)] py-3 text-lg font-semibold text-white disabled:opacity-60" :disabled="loading">
+        <button
+          class="rounded-xl bg-[var(--accent)] py-3 text-lg font-semibold text-white disabled:opacity-60"
+          :disabled="loading"
+        >
           {{ t("common.save") }}
         </button>
-        <button v-if="!editId" type="button" class="rounded-xl bg-emerald-600 py-3 text-lg font-semibold text-white disabled:opacity-60" :disabled="loading" @click="submit(true)">
+        <button
+          v-if="!editId"
+          type="button"
+          class="rounded-xl bg-emerald-600 py-3 text-lg font-semibold text-white disabled:opacity-60"
+          :disabled="loading"
+          @click="submit(true)"
+        >
           {{ t("episode.saveAndAdd") }}
         </button>
       </div>

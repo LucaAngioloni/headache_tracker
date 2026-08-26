@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from .filters import EpisodeFilter
 from .models import Episode, Medicine, Trigger
-from .serializers import EpisodeSerializer, MeSerializer, MedicineSerializer, TriggerSerializer
+from .serializers import EpisodeSerializer, MedicineSerializer, MeSerializer, TriggerSerializer
 from .stats import compute_stats
 
 

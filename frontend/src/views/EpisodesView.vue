@@ -4,7 +4,13 @@ import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
 import { api } from "@/api/client";
 import FilterBar from "@/components/FilterBar.vue";
-import type { Episode, EpisodeFilters, Medicine, Paginated, Trigger } from "@/types";
+import type {
+  Episode,
+  EpisodeFilters,
+  Medicine,
+  Paginated,
+  Trigger,
+} from "@/types";
 
 const { t } = useI18n();
 const episodes = ref<Episode[]>([]);
@@ -58,11 +64,20 @@ onMounted(async () => {
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <h1 class="text-xl font-semibold">{{ t("episode.title") }}</h1>
-      <RouterLink to="/episodes/new" class="rounded-xl bg-[var(--accent)] px-3 py-2 text-sm text-white">
+      <RouterLink
+        to="/episodes/new"
+        class="rounded-xl bg-[var(--accent)] px-3 py-2 text-sm text-white"
+      >
         {{ t("common.add") }}
       </RouterLink>
     </div>
-    <FilterBar v-model="filters" :medicines="medicines" :triggers="triggers" @apply="load" @reset="reset" />
+    <FilterBar
+      v-model="filters"
+      :medicines="medicines"
+      :triggers="triggers"
+      @apply="load"
+      @reset="reset"
+    />
     <p v-if="loading">{{ t("common.loading") }}</p>
     <ul v-else class="grid gap-2">
       <li v-for="ep in episodes" :key="ep.id">
@@ -75,7 +90,11 @@ onMounted(async () => {
             <p class="text-sm">{{ painLabel(ep.pain_level) }}</p>
           </div>
           <p class="mt-1 text-sm text-[var(--muted)]">
-            {{ ep.doses.map((d) => `${d.medicine_name} ×${d.quantity}`).join(" · ") }}
+            {{
+              ep.doses
+                .map((d) => `${d.medicine_name} ×${d.quantity}`)
+                .join(" · ")
+            }}
           </p>
           <p v-if="ep.triggers.length" class="mt-1 text-xs text-[var(--muted)]">
             {{ ep.triggers.map((x) => x.name).join(", ") }}
@@ -83,7 +102,9 @@ onMounted(async () => {
           <p v-if="ep.notes" class="mt-1 text-sm">{{ ep.notes }}</p>
         </RouterLink>
       </li>
-      <li v-if="!episodes.length" class="text-sm text-[var(--muted)]">{{ t("common.empty") }}</li>
+      <li v-if="!episodes.length" class="text-sm text-[var(--muted)]">
+        {{ t("common.empty") }}
+      </li>
     </ul>
   </div>
 </template>

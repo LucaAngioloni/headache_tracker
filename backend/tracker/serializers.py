@@ -113,9 +113,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
             instance.triggers.set(triggers)
         if doses_data is not None:
             if not doses_data:
-                raise serializers.ValidationError(
-                    {"doses": "At least one dose is required."}
-                )
+                raise serializers.ValidationError({"doses": "At least one dose is required."})
             instance.doses.all().delete()
             self._replace_doses(instance, doses_data)
         return instance

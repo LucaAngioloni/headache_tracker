@@ -90,9 +90,36 @@ function openPicker() {
       @input="onDisplayInput"
       @blur="onDisplayBlur"
     />
-    <button type="button" tabindex="-1" aria-label="Open calendar" class="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-[var(--muted)] focus:outline-none" @click="openPicker">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <button
+      type="button"
+      tabindex="-1"
+      aria-label="Open calendar"
+      class="absolute inset-y-0 right-0 flex w-9 cursor-pointer items-center justify-center text-[var(--muted)] focus:outline-none"
+      @click="openPicker"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+      </svg>
     </button>
-    <input ref="picker" type="date" class="pointer-events-none absolute bottom-0 right-1 h-0 w-0 overflow-hidden opacity-0" tabindex="-1" :value="modelValue" @input="onNativeInput" />
+    <input
+      ref="picker"
+      type="date"
+      class="pointer-events-none absolute bottom-0 right-1 h-0 w-0 overflow-hidden opacity-0"
+      tabindex="-1"
+      :value="modelValue"
+      @input="onNativeInput"
+    />
   </div>
 </template>

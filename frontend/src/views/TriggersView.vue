@@ -12,7 +12,9 @@ const loading = ref(true);
 
 async function load() {
   loading.value = true;
-  const { data } = await api.get<Paginated<Trigger>>("/triggers/", { params: { page_size: 200 } });
+  const { data } = await api.get<Paginated<Trigger>>("/triggers/", {
+    params: { page_size: 200 },
+  });
   items.value = data.results;
   loading.value = false;
 }
@@ -46,19 +48,34 @@ onMounted(load);
   <div class="space-y-4">
     <h1 class="text-xl font-semibold">{{ t("trigger.title") }}</h1>
     <form class="flex gap-2" @submit.prevent="save">
-      <input v-model="name" required class="flex-1 rounded-xl border border-[var(--line)] px-3 py-2" :placeholder="t('trigger.name')" />
-      <button class="rounded-xl bg-[var(--accent)] px-3 py-2 text-white">{{ t("common.save") }}</button>
+      <input
+        v-model="name"
+        required
+        class="flex-1 rounded-xl border border-[var(--line)] px-3 py-2"
+        :placeholder="t('trigger.name')"
+      />
+      <button class="rounded-xl bg-[var(--accent)] px-3 py-2 text-white">
+        {{ t("common.save") }}
+      </button>
     </form>
     <p v-if="loading">{{ t("common.loading") }}</p>
     <ul v-else class="grid gap-2">
-      <li v-for="item in items" :key="item.id" class="flex items-center justify-between rounded-2xl border border-[var(--line)] bg-[var(--card)] px-3 py-2">
+      <li
+        v-for="item in items"
+        :key="item.id"
+        class="flex items-center justify-between rounded-2xl border border-[var(--line)] bg-[var(--card)] px-3 py-2"
+      >
         <span>{{ item.name }}</span>
         <div class="flex gap-2 text-sm">
           <button @click="startEdit(item)">{{ t("common.edit") }}</button>
-          <button class="text-red-700" @click="remove(item)">{{ t("common.delete") }}</button>
+          <button class="text-red-700" @click="remove(item)">
+            {{ t("common.delete") }}
+          </button>
         </div>
       </li>
-      <li v-if="!items.length" class="text-sm text-[var(--muted)]">{{ t("common.empty") }}</li>
+      <li v-if="!items.length" class="text-sm text-[var(--muted)]">
+        {{ t("common.empty") }}
+      </li>
     </ul>
   </div>
 </template>

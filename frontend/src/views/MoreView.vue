@@ -17,16 +17,27 @@ function logout() {
 <template>
   <div class="space-y-4">
     <h1 class="text-xl font-semibold">{{ t("nav.more") }}</h1>
-    <p v-if="auth.user" class="text-sm text-[var(--muted)]">{{ auth.user.username }}</p>
+    <p v-if="auth.user" class="text-sm text-[var(--muted)]">
+      {{ auth.user.username }}
+    </p>
     <LanguageSwitcher />
     <div class="grid gap-2">
-      <router-link class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3" to="/medicines">
+      <router-link
+        class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3"
+        to="/medicines"
+      >
         {{ t("nav.medicines") }}
       </router-link>
-      <router-link class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3" to="/triggers">
+      <router-link
+        class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3"
+        to="/triggers"
+      >
         {{ t("nav.triggers") }}
       </router-link>
-      <button class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3 text-left" @click="logout">
+      <button
+        class="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3 text-left"
+        @click="logout"
+      >
         {{ t("nav.logout") }}
       </button>
     </div>

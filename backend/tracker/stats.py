@@ -114,9 +114,7 @@ def compute_stats(user, params) -> dict:
     avg_days_between = None
     unique_dates = sorted(set(dates))
     if len(unique_dates) >= 2:
-        spans = [
-            (b - a).days for a, b in zip(unique_dates, unique_dates[1:], strict=False)
-        ]
+        spans = [(b - a).days for a, b in zip(unique_dates, unique_dates[1:], strict=False)]
         avg_days_between = round(sum(spans) / len(spans), 2)
 
     multi_dose = sum(1 for e in episodes if e.doses.count() >= 2)
@@ -184,16 +182,12 @@ def compute_stats(user, params) -> dict:
         "median_pain": median_pain,
         "avg_days_between": avg_days_between,
         "current_headache_free_streak_days": current_streak_days(user),
-        "longest_headache_free_streak_days": longest_streak_days(
-            dates, date_after, date_before
-        ),
+        "longest_headache_free_streak_days": longest_streak_days(dates, date_after, date_before),
         "second_dose_rate": second_dose_rate,
         "episodes_by_month": [
             {"month": month, "count": by_month[month]} for month in sorted(by_month)
         ],
-        "episodes_by_week": [
-            {"week": week, "count": by_week[week]} for week in sorted(by_week)
-        ],
+        "episodes_by_week": [{"week": week, "count": by_week[week]} for week in sorted(by_week)],
         "medicines": medicines,
         "triggers": triggers,
     }

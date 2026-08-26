@@ -86,7 +86,9 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "triggers",
-                    models.ManyToManyField(blank=True, related_name="episodes", to="tracker.trigger"),
+                    models.ManyToManyField(
+                        blank=True, related_name="episodes", to="tracker.trigger"
+                    ),
                 ),
                 (
                     "user",
@@ -148,6 +150,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="episode",
-            index=models.Index(fields=["user", "occurred_on"], name="tracker_epi_user_id_occon_idx"),
+            index=models.Index(
+                fields=["user", "occurred_on"], name="tracker_epi_user_id_occon_idx"
+            ),
         ),
     ]

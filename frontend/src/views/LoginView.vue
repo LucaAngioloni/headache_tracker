@@ -20,7 +20,10 @@ async function submit() {
   loading.value = true;
   try {
     await auth.login(username.value, password.value);
-    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/episodes";
+    const redirect =
+      typeof route.query.redirect === "string"
+        ? route.query.redirect
+        : "/episodes";
     await router.replace(redirect);
   } catch {
     error.value = true;
@@ -39,10 +42,18 @@ async function submit() {
       </div>
       <LanguageSwitcher />
     </div>
-    <form class="grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4" @submit.prevent="submit">
+    <form
+      class="grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-4"
+      @submit.prevent="submit"
+    >
       <label class="grid gap-1 text-sm">
         {{ t("auth.username") }}
-        <input v-model="username" class="rounded-xl border border-[var(--line)] px-3 py-2" required autocomplete="username" />
+        <input
+          v-model="username"
+          class="rounded-xl border border-[var(--line)] px-3 py-2"
+          required
+          autocomplete="username"
+        />
       </label>
       <label class="grid gap-1 text-sm">
         {{ t("auth.password") }}
@@ -55,7 +66,10 @@ async function submit() {
         />
       </label>
       <p v-if="error" class="text-sm text-red-700">{{ t("auth.error") }}</p>
-      <button class="rounded-xl bg-[var(--accent)] py-2 text-white disabled:opacity-60" :disabled="loading">
+      <button
+        class="rounded-xl bg-[var(--accent)] py-2 text-white disabled:opacity-60"
+        :disabled="loading"
+      >
         {{ t("auth.submit") }}
       </button>
     </form>

@@ -11,7 +11,7 @@ just migrate
 just createsuperuser
 ```
 
-Open http://localhost and sign in.
+Open <http://localhost> and sign in.
 
 Create medicines (Oki Task, Synflex, …) then log episodes. There is no notebook import.
 

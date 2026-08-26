@@ -64,9 +64,7 @@ class Episode(models.Model):
 
 class Dose(models.Model):
     episode = models.ForeignKey(Episode, on_delete=models.CASCADE, related_name="doses")
-    medicine = models.ForeignKey(
-        Medicine, on_delete=models.PROTECT, related_name="doses"
-    )
+    medicine = models.ForeignKey(Medicine, on_delete=models.PROTECT, related_name="doses")
     quantity = models.DecimalField(max_digits=6, decimal_places=2, default=1)
     note = models.CharField(max_length=200, blank=True)
     sort_order = models.PositiveSmallIntegerField(default=0)

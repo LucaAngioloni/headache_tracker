@@ -23,7 +23,9 @@ function active(match: string) {
 </script>
 
 <template>
-  <header class="sticky top-0 z-20 hidden border-b border-[var(--line)] bg-[var(--card)] md:block">
+  <header
+    class="sticky top-0 z-20 hidden border-b border-[var(--line)] bg-[var(--card)] md:block"
+  >
     <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
       <span class="font-semibold">{{ t("app.name") }}</span>
       <nav class="flex items-center gap-4 text-sm">
@@ -32,7 +34,11 @@ function active(match: string) {
           :key="item.to"
           :to="item.to"
           class="rounded-full px-3 py-1"
-          :class="active(item.match) ? 'bg-[var(--accent-soft)] text-[var(--accent)]' : 'text-[var(--muted)]'"
+          :class="
+            active(item.match)
+              ? 'bg-[var(--accent-soft)] text-[var(--accent)]'
+              : 'text-[var(--muted)]'
+          "
         >
           {{ item.label }}
         </RouterLink>
@@ -49,7 +55,9 @@ function active(match: string) {
       :key="item.to"
       :to="item.to"
       class="flex flex-col items-center py-2 text-xs"
-      :class="active(item.match) ? 'text-[var(--accent)]' : 'text-[var(--muted)]'"
+      :class="
+        active(item.match) ? 'text-[var(--accent)]' : 'text-[var(--muted)]'
+      "
     >
       {{ item.label }}
     </RouterLink>

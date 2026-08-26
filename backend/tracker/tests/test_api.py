@@ -42,9 +42,7 @@ def create_episode(user, medicine, occurred_on=None, pain=5, extra_doses=0):
     )
     Dose.objects.create(episode=episode, medicine=medicine, quantity=1)
     for i in range(extra_doses):
-        Dose.objects.create(
-            episode=episode, medicine=medicine, quantity=1, sort_order=i + 1
-        )
+        Dose.objects.create(episode=episode, medicine=medicine, quantity=1, sort_order=i + 1)
     return episode
 
 
@@ -148,9 +146,7 @@ def test_stats_math(auth, user):
     today = timezone.localdate()
     e1 = create_episode(user, med, occurred_on=today - timedelta(days=10), pain=4)
     e1.triggers.add(trig)
-    e2 = create_episode(
-        user, med, occurred_on=today - timedelta(days=4), pain=8, extra_doses=1
-    )
+    e2 = create_episode(user, med, occurred_on=today - timedelta(days=4), pain=8, extra_doses=1)
     Dose.objects.create(episode=e2, medicine=med2, quantity=1, sort_order=2)
 
     res = auth.get(
