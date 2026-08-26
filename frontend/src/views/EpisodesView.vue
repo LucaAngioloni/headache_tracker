@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
 import { api } from "@/api/client";
@@ -17,7 +17,12 @@ const episodes = ref<Episode[]>([]);
 const medicines = ref<Medicine[]>([]);
 const triggers = ref<Trigger[]>([]);
 const loading = ref(true);
+const loadingMore = ref(false);
+const nextPage = ref<number | null>(null);
+const sentinel = ref<HTMLElement | null>(null);
 const filters = ref<EpisodeFilters>({});
+
+let observer: IntersectionObserver | null = null;
 
 function clean(params: EpisodeFilters) {
   const out: Record<string, string | number> = {};
@@ -36,18 +41,52 @@ async function loadCatalogs() {
   triggers.value = tr.data.results;
 }
 
+async function fetchPage(page: number, append: boolean) {
+  const { data } = await api.get<Paginated<Episode>>("/episodes/", {
+    params: { ...clean(filters.value), page, page_size: 100 },
+  });
+  episodes.value = append ? [...episodes.value, ...data.results] : data.results;
+  nextPage.value = data.next ? page + 1 : null;
+}
+
 async function load() {
   loading.value = true;
-  const { data } = await api.get<Paginated<Episode>>("/episodes/", {
-    params: { ...clean(filters.value), page_size: 100 },
-  });
-  episodes.value = data.results;
-  loading.value = false;
+  episodes.value = [];
+  nextPage.value = null;
+  try {
+    await fetchPage(1, false);
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function loadMore() {
+  const page = nextPage.value;
+  if (page == null || loading.value || loadingMore.value) return;
+  loadingMore.value = true;
+  try {
+    await fetchPage(page, true);
+  } finally {
+    loadingMore.value = false;
+  }
 }
 
 function reset() {
   filters.value = {};
   load();
+}
+
+async function setupObserver() {
+  await nextTick();
+  const el = sentinel.value;
+  if (!el || typeof IntersectionObserver === "undefined") return;
+  observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) loadMore();
+    },
+    { rootMargin: "300px" },
+  );
+  observer.observe(el);
 }
 
 function painLabel(value: number | null) {
@@ -57,6 +96,11 @@ function painLabel(value: number | null) {
 onMounted(async () => {
   await loadCatalogs();
   await load();
+  setupObserver();
+});
+
+onBeforeUnmount(() => {
+  observer?.disconnect();
 });
 </script>
 
@@ -106,5 +150,11 @@ onMounted(async () => {
         {{ t("common.empty") }}
       </li>
     </ul>
+    <div
+      ref="sentinel"
+      class="flex justify-center py-3 text-sm text-[var(--muted)]"
+    >
+      <p v-if="loadingMore">{{ t("common.loading") }}</p>
+    </div>
   </div>
 </template>
