@@ -16,7 +16,10 @@ const year = computed(() => cursor.value.getFullYear());
 const month = computed(() => cursor.value.getMonth());
 
 const monthLabel = computed(() =>
-  new Intl.DateTimeFormat(locale.value, { month: "long", year: "numeric" }).format(cursor.value),
+  new Intl.DateTimeFormat(locale.value, {
+    month: "long",
+    year: "numeric",
+  }).format(cursor.value),
 );
 
 const byDay = computed(() => {
@@ -42,7 +45,9 @@ const cells = computed(() => {
   return out;
 });
 
-const selectedEpisodes = computed(() => (selected.value ? byDay.value.get(selected.value) || [] : []));
+const selectedEpisodes = computed(() =>
+  selected.value ? byDay.value.get(selected.value) || [] : [],
+);
 
 function shift(delta: number) {
   cursor.value = new Date(year.value, month.value + delta, 1);
@@ -64,7 +69,10 @@ function open(date: string) {
 }
 
 function add() {
-  router.push({ path: "/episodes/new", query: { date: selected.value || undefined } });
+  router.push({
+    path: "/episodes/new",
+    query: { date: selected.value || undefined },
+  });
 }
 
 onMounted(load);
@@ -73,7 +81,9 @@ onMounted(load);
 <template>
   <div class="space-y-4">
     <div class="flex items-center justify-between">
-      <button class="rounded-full border px-3 py-1" @click="shift(-1)">‹</button>
+      <button class="rounded-full border px-3 py-1" @click="shift(-1)">
+        ‹
+      </button>
       <h1 class="text-lg font-semibold capitalize">{{ monthLabel }}</h1>
       <button class="rounded-full border px-3 py-1" @click="shift(1)">›</button>
     </div>
@@ -85,22 +95,36 @@ onMounted(load);
         v-for="(cell, i) in cells"
         :key="i"
         class="aspect-square rounded-xl border border-transparent p-1 text-sm"
-        :class="cell.date ? 'bg-[var(--card)] border-[var(--line)]' : ''"
+        :class="
+          cell.date
+            ? byDay.get(cell.date)?.length
+              ? 'bg-[var(--accent-soft)] border-[var(--accent)]'
+              : 'bg-[var(--card)] border-[var(--line)]'
+            : ''
+        "
         :disabled="!cell.date"
         @click="cell.date && open(cell.date)"
       >
         <span class="block">{{ cell.day }}</span>
-        <span v-if="cell.date && byDay.get(cell.date)?.length" class="mx-auto mt-1 block h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-        <span v-if="cell.date && (byDay.get(cell.date)?.length || 0) > 1" class="text-[10px] text-[var(--accent)]">
-          {{ byDay.get(cell.date)?.length }}
+        <span
+          v-if="cell.date && byDay.get(cell.date)?.length"
+          class="mx-auto mt-1 flex items-center gap-1 rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[11px] font-semibold leading-none text-white"
+        >
+          <span class="h-2 w-2 rounded-full bg-white/90" />
+          {{ byDay.get(cell.date)?.length || 1 }}
         </span>
       </button>
     </div>
 
-    <div v-if="selected" class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+    <div
+      v-if="selected"
+      class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+    >
       <div class="mb-2 flex items-center justify-between">
         <p class="font-medium">{{ selected }}</p>
-        <button class="text-sm" @click="selected = null">{{ t("common.close") }}</button>
+        <button class="text-sm" @click="selected = null">
+          {{ t("common.close") }}
+        </button>
       </div>
       <ul class="grid gap-2">
         <li v-for="ep in selectedEpisodes" :key="ep.id">
@@ -109,9 +133,14 @@ onMounted(load);
             {{ ep.doses.map((d) => d.medicine_name).join(", ") }}
           </RouterLink>
         </li>
-        <li v-if="!selectedEpisodes.length" class="text-sm text-[var(--muted)]">{{ t("common.empty") }}</li>
+        <li v-if="!selectedEpisodes.length" class="text-sm text-[var(--muted)]">
+          {{ t("common.empty") }}
+        </li>
       </ul>
-      <button class="mt-3 w-full rounded-xl bg-[var(--accent)] py-2 text-sm text-white" @click="add">
+      <button
+        class="mt-3 w-full rounded-xl bg-[var(--accent)] py-2 text-sm text-white"
+        @click="add"
+      >
         {{ t("calendar.addForDay") }}
       </button>
     </div>
