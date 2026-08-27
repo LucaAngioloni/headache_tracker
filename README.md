@@ -2,18 +2,92 @@
 
 Personal multi-user headache diary: medicines, episodes with doses, triggers, calendar, stats.
 
-## First run
+## Installation and Usage
+
+### Prerequisites
+
+- **Docker** with Docker Compose v2 (included with Docker Desktop on macOS/Windows, or `docker-compose-plugin` on Linux).
+- (Optional) `just`, the command runner used throughout this guide. The equivalent plain `docker compose ...` commands are shown where useful; install [just](https://github.com/casey/just) or fall back to raw `docker compose`.
+
+### Option A — Production (prebuilt images)
+
+Uses the prebuilt images already published to GHCR, with no local build. This is the recommended way to run the app.
+
+1. Get the production compose file `docker-compose.yml` (from the repo root or by cloning):
+
+   ```bash
+   curl -O https://raw.githubusercontent.com/lucaangioloni/headache_tracker/main/docker-compose.yml
+   ```
+
+2. Create the environment file from the example and review it:
+
+   ```bash
+   curl -O https://raw.githubusercontent.com/lucaangioloni/headache_tracker/main/.env.example
+   cp .env.example .env
+   ```
+
+   At minimum set a strong `DJANGO_SECRET_KEY` and your `DOMAIN` before going live.
+
+3. Run the Django one-time setup:
+
+   ```bash
+   docker compose pull
+   docker compose run backend python manage.py migrate
+   docker compose run backend python manage.py collectstatic
+   docker compose run backend python manage.py createsuperuser
+   ```
+
+   Or with `just` (and `COMPOSE_FILE` set to `docker-compose.yml`):
+
+   ```bash
+   COMPOSE_FILE=docker-compose.yml just pull
+   COMPOSE_FILE=docker-compose.yml just migrate
+   COMPOSE_FILE=docker-compose.yml just collectstatic
+   COMPOSE_FILE=docker-compose.yml just createsuperuser
+   ```
+
+4. Start the stack:
+
+   ```bash
+   docker compose up
+   ```
+
+   Or with `just`:
+
+   ```bash
+   COMPOSE_FILE=docker-compose.yml just up
+   ```
+
+   Or in detached mode: `docker compose up -d` or`COMPOSE_FILE=docker-compose.yml just upd`.
+
+Open <http://localhost> (or your `DOMAIN`) and sign in with the superuser you created. The app is served on ports `80`/`443`. (You can change the ports in the docker compose file if needed.)
+
+Create medicines (Oki Task, Synflex, …) then log episodes.
+
+### Option B — From source (development)
+
+Clone the repository and build images locally. Use this to contribute, customize, or develop.
 
 ```bash
+git clone https://github.com/lucaangioloni/headache_tracker.git
+cd headache_tracker
 cp .env.example .env
-just ubd
+```
+
+Edit `.env` to set a strong `DJANGO_SECRET_KEY` and your `DOMAIN`.
+
+Then run the same setup steps:
+
+```bash
+just pull   # optional; skips the caddy pull warning
+just up_build    # or: just ub / just ubd (detached)
 just migrate
 just createsuperuser
 ```
 
-Open <http://localhost> and sign in.
+Open <http://localhost> and sign in. The frontend dev server hot-reloads on `localhost:5173`.
 
-Create medicines (Oki Task, Synflex, …) then log episodes. There is no notebook import.
+Change ports in the compose file if needed.
 
 ## Commands
 
