@@ -48,6 +48,9 @@ const medicines = ref<Medicine[]>([]);
 const triggers = ref<Trigger[]>([]);
 const filters = ref<EpisodeFilters>({});
 const loading = ref(true);
+const exporting = ref(false);
+const reportOverview = ref<HTMLElement | null>(null);
+const reportDetail = ref<HTMLElement | null>(null);
 
 const theme = computed(() => {
   const s = getComputedStyle(document.documentElement);
@@ -202,6 +205,32 @@ async function load() {
   loading.value = false;
 }
 
+function dateStamp(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+async function exportPdf() {
+  if (
+    !stats.value ||
+    !reportOverview.value ||
+    !reportDetail.value
+  )
+    return;
+  exporting.value = true;
+  try {
+    const { exportSectionsToPdf } = await import("@/utils/pdf");
+    await exportSectionsToPdf(
+      [reportOverview.value, reportDetail.value],
+      `stats-${dateStamp(new Date())}.pdf`,
+    );
+  } finally {
+    exporting.value = false;
+  }
+}
+
 function reset() {
   filters.value = {};
   load();
@@ -215,7 +244,17 @@ onMounted(async () => {
 
 <template>
   <div class="space-y-4">
-    <h1 class="text-xl font-semibold">{{ t("stats.title") }}</h1>
+    <div v-if="stats" class="flex items-center justify-between">
+      <h1 class="text-xl font-semibold">{{ t("stats.title") }}</h1>
+      <button
+        class="rounded-xl bg-[var(--accent)] px-3 py-2 text-sm text-white"
+        :disabled="exporting"
+        @click="exportPdf"
+      >
+        {{ exporting ? t("stats.exporting") : t("stats.exportPdf") }}
+      </button>
+    </div>
+    <h1 v-else class="text-xl font-semibold">{{ t("stats.title") }}</h1>
     <FilterBar
       v-model="filters"
       :medicines="medicines"
@@ -225,6 +264,7 @@ onMounted(async () => {
     />
     <p v-if="loading">{{ t("common.loading") }}</p>
     <template v-else-if="stats">
+      <div ref="reportOverview" class="space-y-4">
       <div class="grid grid-cols-2 gap-2">
         <div
           class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
@@ -325,7 +365,9 @@ onMounted(async () => {
           {{ t("common.empty") }}
         </p>
       </section>
+      </div>
 
+      <div ref="reportDetail" class="space-y-4">
       <section class="space-y-2">
         <h2 class="font-medium">{{ t("stats.medicines") }}</h2>
         <div
@@ -361,6 +403,7 @@ onMounted(async () => {
           {{ t("common.empty") }}
         </p>
       </section>
+      </div>
     </template>
   </div>
 </template>

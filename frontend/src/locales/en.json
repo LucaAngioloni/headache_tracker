@@ -89,6 +89,8 @@
     "byMonth": "By month",
     "byWeek": "By week",
     "medicines": "Medicines",
-    "triggers": "Triggers"
+    "triggers": "Triggers",
+    "exportPdf": "Export PDF",
+    "exporting": "Exporting…"
   }
 }

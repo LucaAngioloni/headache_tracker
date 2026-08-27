@@ -89,6 +89,8 @@
     "byMonth": "Per mese",
     "byWeek": "Per settimana",
     "medicines": "Farmaci",
-    "triggers": "Trigger"
+    "triggers": "Trigger",
+    "exportPdf": "Esporta PDF",
+    "exporting": "Esportazione…"
   }
 }
