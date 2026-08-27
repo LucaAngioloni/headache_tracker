@@ -98,3 +98,28 @@ makemessages:
 compilemessages *args='':
   @echo "Compiling message files for translations..."
   @docker compose run --rm django python manage.py compilemessages {{args}}
+
+db_export file="backups/headache_tracker.sql":
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mkdir -p "$(dirname "{{file}}")"
+  echo "Exporting database to {{file}}..."
+  docker compose up -d db
+  docker compose exec -T db sh -c 'until pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 1; done' >/dev/null
+  docker compose exec -T db sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner --no-acl --clean --if-exists' > "{{file}}"
+  echo "Exported {{file}}"
+
+db_import file:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  if [ ! -f "{{file}}" ]; then
+    echo "SQL dump not found: {{file}}" >&2
+    exit 1
+  fi
+  echo "Importing {{file}} (replaces existing database objects)..."
+  docker compose up -d db
+  docker compose exec -T db sh -c 'until pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 1; done' >/dev/null
+  docker compose stop django
+  docker compose exec -T db sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1' < "{{file}}"
+  docker compose start django
+  echo "Imported {{file}}"

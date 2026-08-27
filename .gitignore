@@ -20,4 +20,5 @@ frontend/.vite/
 *.bak
 /data/*
 !/data/.gitkeep
+/backups/
 .mypy_cache

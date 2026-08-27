@@ -129,6 +129,7 @@ Default compose file is `docker-compose.local.yml`.
 - `just test`
 - `just createsuperuser`
 - `just collectstatic`
+- `just db_export` / `just db_import backups/headache_tracker.sql`
 
 Production pulls prebuilt images from GHCR (`backend` and `frontend`, tagged `latest` and the app version). Pin a version with `DJANGO_IMAGE` / `CADDY_IMAGE` in `.env`.
 
@@ -137,7 +138,27 @@ COMPOSE_FILE=docker-compose.yml just pull
 COMPOSE_FILE=docker-compose.yml just up
 ```
 
-Persistent state lives in `data/` (postgres, static, media, caddy, local `node_modules`). Back up or swap that folder.
+Persistent state lives in `data/` (postgres, static, media, caddy, local `node_modules`).
+
+### Moving the database (Mac ↔ Linux)
+
+Do **not** copy `data/postgres` between machines. Postgres data directories are not portable across OS, CPU architecture, or libc/collation (macOS vs Linux, ARM vs x86). Restoring a copied volume typically fails with collation or compatibility errors.
+
+Export a portable SQL dump on the source machine (database container must be able to start):
+
+```bash
+just db_export                         # writes backups/headache_tracker.sql
+just db_export backups/from-mac.sql    # custom path
+```
+
+On the destination machine, start from an empty Postgres volume (new `data/postgres`, or stop the stack and remove that folder), start the db so it creates a fresh database with the local default collation, then import:
+
+```bash
+# destination: do not copy data/postgres from the other OS
+just db_import backups/headache_tracker.sql
+```
+
+`db_import` stops Django while restoring so table drops are not blocked, then starts it again. The dump uses `--no-owner --no-acl --clean --if-exists` and does **not** recreate the database, so the target keeps its own encoding/collation.
 
 Backend deps: edit `backend/requirements/*.in`, then `just requirements` (`uv pip compile`).
 
