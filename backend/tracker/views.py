@@ -26,7 +26,6 @@ class MedicineViewSet(UserScopedMixin, viewsets.ModelViewSet):
     ordering_fields = ("name", "id")
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
         try:
             return super().destroy(request, *args, **kwargs)
         except ProtectedError:

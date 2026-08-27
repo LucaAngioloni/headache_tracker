@@ -4,13 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import { api } from "@/api/client";
 import DateInput from "@/components/DateInput.vue";
-import type {
-  Episode,
-  EpisodeWrite,
-  Medicine,
-  Paginated,
-  Trigger,
-} from "@/types";
+import type { Episode, EpisodeWrite, Medicine, Paginated, Trigger } from "@/types";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -24,14 +18,10 @@ const notes = ref("");
 const selectedTriggers = ref<number[]>([]);
 const triggerQuery = ref("");
 const showTriggerSuggestions = ref(false);
-const doses = ref<EpisodeWrite["doses"]>([
-  { medicine: 0, quantity: 1, note: "" },
-]);
+const doses = ref<EpisodeWrite["doses"]>([{ medicine: 0, quantity: 1, note: "" }]);
 const error = ref("");
 const loading = ref(false);
-const editId = computed(() =>
-  route.params.id ? Number(route.params.id) : null,
-);
+const editId = computed(() => (route.params.id ? Number(route.params.id) : null));
 
 async function loadCatalogs() {
   const [m, tr] = await Promise.all([
@@ -47,8 +37,7 @@ async function loadCatalogs() {
 
 async function loadEpisode() {
   if (!editId.value) {
-    if (typeof route.query.date === "string")
-      occurredOn.value = route.query.date;
+    if (typeof route.query.date === "string") occurredOn.value = route.query.date;
     return;
   }
   const { data } = await api.get<Episode>(`/episodes/${editId.value}/`);
@@ -79,9 +68,7 @@ function removeDose(index: number) {
 const triggerSuggestions = computed(() => {
   const q = triggerQuery.value.trim().toLowerCase();
   return triggers.value.filter(
-    (t) =>
-      !selectedTriggers.value.includes(t.id) &&
-      (!q || t.name.toLowerCase().includes(q)),
+    (t) => !selectedTriggers.value.includes(t.id) && (!q || t.name.toLowerCase().includes(q)),
   );
 });
 
@@ -102,9 +89,7 @@ function selectTrigger(id: number) {
 async function addTriggerFromQuery() {
   const name = triggerQuery.value.trim();
   if (!name) return;
-  const existing = triggers.value.find(
-    (t) => t.name.toLowerCase() === name.toLowerCase(),
-  );
+  const existing = triggers.value.find((t) => t.name.toLowerCase() === name.toLowerCase());
   if (existing) {
     selectTrigger(existing.id);
     return;
@@ -118,11 +103,7 @@ function onTriggerKeydown(e: KeyboardEvent) {
   if (e.key === "Enter") {
     e.preventDefault();
     void addTriggerFromQuery();
-  } else if (
-    e.key === "Backspace" &&
-    !triggerQuery.value &&
-    selectedTriggers.value.length
-  ) {
+  } else if (e.key === "Backspace" && !triggerQuery.value && selectedTriggers.value.length) {
     selectedTriggers.value.pop();
   }
 }
@@ -175,9 +156,7 @@ function resetForm() {
   notes.value = "";
   selectedTriggers.value = [];
   triggerQuery.value = "";
-  doses.value = [
-    { medicine: medicines.value[0]?.id || 0, quantity: 1, note: "" },
-  ];
+  doses.value = [{ medicine: medicines.value[0]?.id || 0, quantity: 1, note: "" }];
   error.value = "";
 }
 
@@ -204,21 +183,13 @@ onMounted(async () => {
       <div class="grid gap-1 text-sm">
         <span>{{ t("episode.pain") }}</span>
         <div class="flex items-center gap-3">
-          <button
-            type="button"
-            class="h-10 w-10 rounded-full border"
-            @click="bumpPain(-1)"
-          >
+          <button type="button" class="h-10 w-10 rounded-full border" @click="bumpPain(-1)">
             −
           </button>
           <span class="min-w-10 text-center text-lg font-semibold">{{
             pain ?? t("episode.painUnknown")
           }}</span>
-          <button
-            type="button"
-            class="h-10 w-10 rounded-full border"
-            @click="bumpPain(1)"
-          >
+          <button type="button" class="h-10 w-10 rounded-full border" @click="bumpPain(1)">
             +
           </button>
         </div>
@@ -306,11 +277,7 @@ onMounted(async () => {
             {{ t("common.delete") }}
           </button>
         </div>
-        <button
-          type="button"
-          class="rounded-xl border px-3 py-2 text-sm"
-          @click="addDose"
-        >
+        <button type="button" class="rounded-xl border px-3 py-2 text-sm" @click="addDose">
           {{ t("episode.addDose") }}
         </button>
       </div>

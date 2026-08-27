@@ -18,9 +18,7 @@ def _today() -> date:
 def default_range(qs) -> tuple[date, date]:
     """From the first episode in the queryset to today. Today only if no episodes."""
     end = _today()
-    first = (
-        qs.order_by("occurred_on").values_list("occurred_on", flat=True).first()
-    )
+    first = qs.order_by("occurred_on").values_list("occurred_on", flat=True).first()
     start = first if first is not None else end
     return start, end
 

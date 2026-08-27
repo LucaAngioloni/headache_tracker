@@ -20,10 +20,7 @@ async function submit() {
   loading.value = true;
   try {
     await auth.login(username.value, password.value);
-    const redirect =
-      typeof route.query.redirect === "string"
-        ? route.query.redirect
-        : "/episodes";
+    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/episodes";
     await router.replace(redirect);
   } catch {
     error.value = true;

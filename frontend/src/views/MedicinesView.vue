@@ -104,9 +104,7 @@ onMounted(load);
       >
         <div>
           <p class="font-medium">{{ item.name }}</p>
-          <p class="text-xs text-[var(--muted)]">
-            {{ item.active_ingredient }} · {{ item.unit }}
-          </p>
+          <p class="text-xs text-[var(--muted)]">{{ item.active_ingredient }} · {{ item.unit }}</p>
         </div>
         <div class="flex gap-2 text-sm">
           <button @click="startEdit(item)">{{ t("common.edit") }}</button>

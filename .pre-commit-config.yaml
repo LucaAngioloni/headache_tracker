@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: detect-private-key
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: "1.30.0"
+    hooks:
+      - id: django-upgrade
+        args: ["--target-version", "5.2"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      - id: ruff
+        name: ruff-lint (backend)
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+        name: ruff-format (backend)
+  - repo: local
+    hooks:
+      - id: frontend-lint
+        name: eslint (frontend)
+        entry: pnpm --dir frontend lint
+        language: system
+        pass_filenames: false
+        files: ^frontend/
+      - id: frontend-format
+        name: prettier (frontend)
+        entry: pnpm --dir frontend format:check
+        language: system
+        pass_filenames: false
+        files: ^frontend/

@@ -46,8 +46,7 @@ api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
     const original = error.config as
-      | (InternalAxiosRequestConfig & { _retry?: boolean })
-      | undefined;
+      (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
     if (!original || error.response?.status !== 401 || original._retry) {
       return Promise.reject(error);
     }

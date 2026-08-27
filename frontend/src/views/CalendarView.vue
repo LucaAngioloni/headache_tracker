@@ -81,9 +81,7 @@ onMounted(load);
 <template>
   <div class="space-y-4">
     <div class="flex items-center justify-between">
-      <button class="rounded-full border px-3 py-1" @click="shift(-1)">
-        ‹
-      </button>
+      <button class="rounded-full border px-3 py-1" @click="shift(-1)">‹</button>
       <h1 class="text-lg font-semibold capitalize">{{ monthLabel }}</h1>
       <button class="rounded-full border px-3 py-1" @click="shift(1)">›</button>
     </div>
@@ -116,10 +114,7 @@ onMounted(load);
       </button>
     </div>
 
-    <div
-      v-if="selected"
-      class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-    >
+    <div v-if="selected" class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
       <div class="mb-2 flex items-center justify-between">
         <p class="font-medium">{{ selected }}</p>
         <button class="text-sm" @click="selected = null">

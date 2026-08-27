@@ -2,11 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 
 import { useI18n } from "vue-i18n";
-import {
-  Bar,
-  Line,
-  Pie,
-} from "vue-chartjs";
+import { Bar, Line, Pie } from "vue-chartjs";
 import {
   ArcElement,
   BarElement,
@@ -22,13 +18,7 @@ import {
 } from "chart.js";
 import { api } from "@/api/client";
 import FilterBar from "@/components/FilterBar.vue";
-import type {
-  EpisodeFilters,
-  Medicine,
-  Paginated,
-  Stats,
-  Trigger,
-} from "@/types";
+import type { EpisodeFilters, Medicine, Paginated, Stats, Trigger } from "@/types";
 
 ChartJS.register(
   Title,
@@ -87,7 +77,8 @@ const palette = [
   "#475569",
 ];
 
-const scatterColors = (n: number) => Array.from({ length: n }, (_, i) => palette[i % palette.length]);
+const scatterColors = (n: number) =>
+  Array.from({ length: n }, (_, i) => palette[i % palette.length]);
 
 const monthChart = computed(() => ({
   labels: stats.value?.episodes_by_month.map((r) => r.month) ?? [],
@@ -136,7 +127,10 @@ const weekOptions = computed<ChartOptions<"line">>(() => ({
     legend: { display: false },
   },
   scales: {
-    x: { ticks: { color: theme.value.muted, maxRotation: 45, minRotation: 0 }, grid: { display: false } },
+    x: {
+      ticks: { color: theme.value.muted, maxRotation: 45, minRotation: 0 },
+      grid: { display: false },
+    },
     y: { beginAtZero: true, ticks: { color: theme.value.muted } },
   },
 }));
@@ -213,12 +207,7 @@ function dateStamp(d: Date) {
 }
 
 async function exportPdf() {
-  if (
-    !stats.value ||
-    !reportOverview.value ||
-    !reportDetail.value
-  )
-    return;
+  if (!stats.value || !reportOverview.value || !reportDetail.value) return;
   exporting.value = true;
   try {
     const { exportSectionsToPdf } = await import("@/utils/pdf");
@@ -265,144 +254,134 @@ onMounted(async () => {
     <p v-if="loading">{{ t("common.loading") }}</p>
     <template v-else-if="stats">
       <div ref="reportOverview" class="space-y-4">
-      <div class="grid grid-cols-2 gap-2">
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">{{ t("stats.episodes") }}</p>
-          <p class="text-2xl font-semibold">{{ stats.episode_count }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">{{ t("stats.avgPain") }}</p>
-          <p class="text-2xl font-semibold">{{ stats.avg_pain ?? "—" }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">{{ t("stats.medianPain") }}</p>
-          <p class="text-2xl font-semibold">{{ stats.median_pain ?? "—" }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">{{ t("stats.avgGap") }}</p>
-          <p class="text-2xl font-semibold">
-            {{ stats.avg_days_between ?? "—" }}
-          </p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">
-            {{ t("stats.avgEpisodesMonth") }}
-          </p>
-          <p class="text-2xl font-semibold">{{ stats.avg_episodes_per_month }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">
-            {{ t("stats.avgEpisodesWeek") }}
-          </p>
-          <p class="text-2xl font-semibold">{{ stats.avg_episodes_per_week }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">
-            {{ t("stats.currentStreak") }}
-          </p>
-          <p class="text-2xl font-semibold">{{ stats.current_headache_free_streak_days }}</p>
-        </div>
-        <div
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">
-            {{ t("stats.longestStreak") }}
-          </p>
-          <p class="text-2xl font-semibold">
-            {{ stats.longest_headache_free_streak_days }}
-          </p>
-        </div>
-        <div
-          class="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <p class="text-xs text-[var(--muted)]">{{ t("stats.secondDose") }}</p>
-          <p class="text-2xl font-semibold">
-            {{ pct(stats.second_dose_rate) }}
-          </p>
-        </div>
-      </div>
-
-      <section class="space-y-2">
-        <h2 class="font-medium">{{ t("stats.byMonth") }}</h2>
-        <div
-          v-if="stats.episodes_by_month.length"
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <div class="h-56">
-            <Bar :data="monthChart" :options="monthOptions" />
+        <div class="grid grid-cols-2 gap-2">
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">{{ t("stats.episodes") }}</p>
+            <p class="text-2xl font-semibold">{{ stats.episode_count }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">{{ t("stats.avgPain") }}</p>
+            <p class="text-2xl font-semibold">{{ stats.avg_pain ?? "—" }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">{{ t("stats.medianPain") }}</p>
+            <p class="text-2xl font-semibold">{{ stats.median_pain ?? "—" }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">{{ t("stats.avgGap") }}</p>
+            <p class="text-2xl font-semibold">
+              {{ stats.avg_days_between ?? "—" }}
+            </p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">
+              {{ t("stats.avgEpisodesMonth") }}
+            </p>
+            <p class="text-2xl font-semibold">{{ stats.avg_episodes_per_month }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">
+              {{ t("stats.avgEpisodesWeek") }}
+            </p>
+            <p class="text-2xl font-semibold">{{ stats.avg_episodes_per_week }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">
+              {{ t("stats.currentStreak") }}
+            </p>
+            <p class="text-2xl font-semibold">{{ stats.current_headache_free_streak_days }}</p>
+          </div>
+          <div class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">
+              {{ t("stats.longestStreak") }}
+            </p>
+            <p class="text-2xl font-semibold">
+              {{ stats.longest_headache_free_streak_days }}
+            </p>
+          </div>
+          <div class="col-span-2 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3">
+            <p class="text-xs text-[var(--muted)]">{{ t("stats.secondDose") }}</p>
+            <p class="text-2xl font-semibold">
+              {{ pct(stats.second_dose_rate) }}
+            </p>
           </div>
         </div>
-        <p v-else class="text-sm text-[var(--muted)]">
-          {{ t("common.empty") }}
-        </p>
-      </section>
 
-      <section class="space-y-2">
-        <h2 class="font-medium">{{ t("stats.byWeek") }}</h2>
-        <div
-          v-if="stats.episodes_by_week.length"
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <div class="h-56">
-            <Line :data="weekChart" :options="weekOptions" />
+        <section class="space-y-2">
+          <h2 class="font-medium">{{ t("stats.byMonth") }}</h2>
+          <div
+            v-if="stats.episodes_by_month.length"
+            class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+          >
+            <div class="h-56">
+              <Bar :data="monthChart" :options="monthOptions" />
+            </div>
           </div>
-        </div>
-        <p v-else class="text-sm text-[var(--muted)]">
-          {{ t("common.empty") }}
-        </p>
-      </section>
+          <p v-else class="text-sm text-[var(--muted)]">
+            {{ t("common.empty") }}
+          </p>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="font-medium">{{ t("stats.byWeek") }}</h2>
+          <div
+            v-if="stats.episodes_by_week.length"
+            class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+          >
+            <div class="h-56">
+              <Line :data="weekChart" :options="weekOptions" />
+            </div>
+          </div>
+          <p v-else class="text-sm text-[var(--muted)]">
+            {{ t("common.empty") }}
+          </p>
+        </section>
       </div>
 
       <div ref="reportDetail" class="space-y-4">
-      <section class="space-y-2">
-        <h2 class="font-medium">{{ t("stats.medicines") }}</h2>
-        <div
-          v-if="stats.medicines.length"
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <div class="h-56">
-            <Pie :data="medicineChart" :options="pieOptions" />
+        <section class="space-y-2">
+          <h2 class="font-medium">{{ t("stats.medicines") }}</h2>
+          <div
+            v-if="stats.medicines.length"
+            class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+          >
+            <div class="h-56">
+              <Pie :data="medicineChart" :options="pieOptions" />
+            </div>
+            <p class="mt-2 text-sm text-[var(--muted)]">
+              {{
+                stats.medicines
+                  .map((r) => `${r.name} · ${r.episode_count} (${pct(r.pct)})`)
+                  .join(" · ")
+              }}
+            </p>
           </div>
-          <p class="mt-2 text-sm text-[var(--muted)]">
-            {{ stats.medicines.map((r) => `${r.name} · ${r.episode_count} (${pct(r.pct)})`).join(" · ") }}
+          <p v-else class="text-sm text-[var(--muted)]">
+            {{ t("common.empty") }}
           </p>
-        </div>
-        <p v-else class="text-sm text-[var(--muted)]">
-          {{ t("common.empty") }}
-        </p>
-      </section>
+        </section>
 
-      <section class="space-y-2">
-        <h2 class="font-medium">{{ t("stats.triggers") }}</h2>
-        <div
-          v-if="stats.triggers.length"
-          class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
-        >
-          <div class="h-56">
-            <Pie :data="triggerChart" :options="pieOptions" />
+        <section class="space-y-2">
+          <h2 class="font-medium">{{ t("stats.triggers") }}</h2>
+          <div
+            v-if="stats.triggers.length"
+            class="rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+          >
+            <div class="h-56">
+              <Pie :data="triggerChart" :options="pieOptions" />
+            </div>
+            <p class="mt-2 text-sm text-[var(--muted)]">
+              {{
+                stats.triggers
+                  .map((r) => `${r.name} · ${r.episode_count} (${pct(r.pct)})`)
+                  .join(" · ")
+              }}
+            </p>
           </div>
-          <p class="mt-2 text-sm text-[var(--muted)]">
-            {{ stats.triggers.map((r) => `${r.name} · ${r.episode_count} (${pct(r.pct)})`).join(" · ") }}
+          <p v-else class="text-sm text-[var(--muted)]">
+            {{ t("common.empty") }}
           </p>
-        </div>
-        <p v-else class="text-sm text-[var(--muted)]">
-          {{ t("common.empty") }}
-        </p>
-      </section>
+        </section>
       </div>
     </template>
   </div>

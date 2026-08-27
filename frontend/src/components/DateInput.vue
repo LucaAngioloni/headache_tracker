@@ -36,10 +36,7 @@ function onDisplayInput(e: Event) {
   const caret = el.selectionStart ?? el.value.length;
   const digitsBefore = el.value.slice(0, caret).replace(/\D/g, "").length;
   el.value = formatTyping(el.value);
-  const newCaret = Math.min(
-    digitsBefore + Math.floor((digitsBefore - 1) / 2) + 1,
-    el.value.length,
-  );
+  const newCaret = Math.min(digitsBefore + Math.floor((digitsBefore - 1) / 2) + 1, el.value.length);
   el.setSelectionRange(newCaret, newCaret);
   display.value = el.value;
 }

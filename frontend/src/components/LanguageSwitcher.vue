@@ -12,10 +12,7 @@ function change(value: string) {
 </script>
 
 <template>
-  <label
-    class="flex items-center gap-2 text-sm text-[var(--muted)]"
-    :title="t('common.language')"
-  >
+  <label class="flex items-center gap-2 text-sm text-[var(--muted)]" :title="t('common.language')">
     <span v-if="!compact">{{ t("common.language") }}</span>
     <select
       class="rounded-lg border border-[var(--line)] bg-white px-2 py-1 text-[var(--ink)]"

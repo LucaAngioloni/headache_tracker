@@ -4,13 +4,7 @@ import { useI18n } from "vue-i18n";
 import { RouterLink } from "vue-router";
 import { api } from "@/api/client";
 import FilterBar from "@/components/FilterBar.vue";
-import type {
-  Episode,
-  EpisodeFilters,
-  Medicine,
-  Paginated,
-  Trigger,
-} from "@/types";
+import type { Episode, EpisodeFilters, Medicine, Paginated, Trigger } from "@/types";
 
 const { t } = useI18n();
 const episodes = ref<Episode[]>([]);
@@ -134,11 +128,7 @@ onBeforeUnmount(() => {
             <p class="text-sm">{{ painLabel(ep.pain_level) }}</p>
           </div>
           <p class="mt-1 text-sm text-[var(--muted)]">
-            {{
-              ep.doses
-                .map((d) => `${d.medicine_name} ×${d.quantity}`)
-                .join(" · ")
-            }}
+            {{ ep.doses.map((d) => `${d.medicine_name} ×${d.quantity}`).join(" · ") }}
           </p>
           <p v-if="ep.triggers.length" class="mt-1 text-xs text-[var(--muted)]">
             {{ ep.triggers.map((x) => x.name).join(", ") }}
@@ -150,10 +140,7 @@ onBeforeUnmount(() => {
         {{ t("common.empty") }}
       </li>
     </ul>
-    <div
-      ref="sentinel"
-      class="flex justify-center py-3 text-sm text-[var(--muted)]"
-    >
+    <div ref="sentinel" class="flex justify-center py-3 text-sm text-[var(--muted)]">
       <p v-if="loadingMore">{{ t("common.loading") }}</p>
     </div>
   </div>
