@@ -60,9 +60,40 @@ Uses the prebuilt images already published to GHCR, with no local build. This is
 
    Or in detached mode: `docker compose up -d` or`COMPOSE_FILE=docker-compose.yml just upd`.
 
-Open <http://localhost> (or your `DOMAIN`) and sign in with the superuser you created. The app is served on ports `80`/`443`. (You can change the ports in the docker compose file if needed.)
+Open <http://localhost> (or your `DOMAIN`) and sign in with the superuser you created.
 
 Create medicines (Oki Task, Synflex, …) then log episodes.
+
+#### Deployment modes
+
+The app ships with three compose files, one per deployment mode. Pick the one that matches where you run it and select it with `COMPOSE_FILE`.
+
+| Mode | Compose file | HTTPS | Default port |
+| --- | --- | --- | --- |
+| Development | `docker-compose.local.yml` | no | `80` |
+| LAN (local network) | `docker-compose.lan.yml` | no | `8383` |
+| Public (domain) | `docker-compose.yml` | auto | `80`/`443` |
+
+```bash
+just up                                    # development (default)
+COMPOSE_FILE=docker-compose.yml just up    # public, set DOMAIN to a real hostname
+COMPOSE_FILE=docker-compose.lan.yml just up  # LAN, plain HTTP, never binds 443
+```
+
+For a LAN server at `192.168.1.10` on port `8383`, set in `.env`:
+
+```env
+DOMAIN=192.168.1.10
+DJANGO_CSRF_TRUSTED_ORIGINS=http://192.168.1.10:8383
+CADDY_PORT_HTTP=8383
+```
+
+When installing on a remote LAN/public box with `curl`, also fetch the LAN file and its Caddyfile:
+
+```bash
+curl -O https://raw.githubusercontent.com/lucaangioloni/headache_tracker/main/docker-compose.lan.yml
+curl -O https://raw.githubusercontent.com/lucaangioloni/headache_tracker/main/Caddyfile.lan
+```
 
 ### Option B — From source (development)
 
@@ -87,7 +118,7 @@ just createsuperuser
 
 Open <http://localhost> and sign in. The frontend dev server hot-reloads on `localhost:5173`.
 
-Change ports in the compose file if needed.
+Override the published dev HTTP port with `CADDY_PORT_HTTP` in `.env` if needed.
 
 ## Commands
 

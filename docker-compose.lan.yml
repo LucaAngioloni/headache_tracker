@@ -16,49 +16,33 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
 
   django:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.dev
-    command: python manage.py runserver 0.0.0.0:8000
+    image: ${DJANGO_IMAGE:-ghcr.io/lucaangioloni/headache_tracker/backend:latest}
     env_file:
       - .env
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.local
-      DJANGO_DEBUG: "1"
+      DJANGO_SETTINGS_MODULE: config.settings.production
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
     volumes:
-      - ./backend:/app
       - ./data/static:/app/staticfiles
       - ./data/media:/app/media
     depends_on:
       db:
         condition: service_healthy
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-    command: pnpm dev --host 0.0.0.0 --port 5173
-    environment:
-      CHOKIDAR_USEPOLLING: "true"
-    volumes:
-      - ./frontend:/app
-      - ./data/node_modules:/app/node_modules
-    depends_on:
-      - django
+    restart: unless-stopped
 
   caddy:
-    image: caddy:2-alpine
+    image: ${CADDY_IMAGE:-ghcr.io/lucaangioloni/headache_tracker/frontend:latest}
     ports:
-      - "${CADDY_PORT_HTTP:-80}:80"
+      - "${CADDY_PORT_HTTP:-8383}:8383"
     volumes:
-      - ./Caddyfile.local:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.lan:/etc/caddy/Caddyfile:ro
       - ./data/static:/srv/static:ro
       - ./data/caddy/data:/data
       - ./data/caddy/config:/config
     depends_on:
       - django
-      - frontend
+    restart: unless-stopped

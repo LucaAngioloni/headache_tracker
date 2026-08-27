@@ -37,8 +37,8 @@ services:
   caddy:
     image: ${CADDY_IMAGE:-ghcr.io/lucaangioloni/headache_tracker/frontend:latest}
     ports:
-      - "80:80"
-      - "443:443"
+      - "${CADDY_PORT_HTTP:-80}:80"
+      - "${CADDY_PORT_HTTPS:-443}:443"
     environment:
       DOMAIN: ${DOMAIN:-localhost}
     volumes:
