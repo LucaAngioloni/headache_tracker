@@ -46,13 +46,13 @@ function active(match: string) {
   </header>
 
   <nav
-    class="fixed inset-x-0 bottom-0 z-20 grid grid-cols-4 border-t border-[var(--line)] bg-[var(--card)] md:hidden"
+    class="fixed inset-x-0 bottom-0 z-20 grid grid-cols-4 border-t border-[var(--line)] bg-[var(--card)] pb-[env(safe-area-inset-bottom)] md:hidden"
   >
     <RouterLink
       v-for="item in items"
       :key="item.to"
       :to="item.to"
-      class="flex flex-col items-center py-2 text-xs"
+      class="flex flex-col items-center justify-center gap-0.5 py-4 text-xs"
       :class="active(item.match) ? 'text-[var(--accent)]' : 'text-[var(--muted)]'"
     >
       {{ item.label }}

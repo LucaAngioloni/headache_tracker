@@ -11,7 +11,7 @@ document.documentElement.lang = locale.value;
 </script>
 
 <template>
-  <div class="min-h-dvh pb-20 md:pb-0">
+  <div class="min-h-dvh pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-0">
     <AppNav v-if="showNav" />
     <main class="mx-auto w-full max-w-3xl px-4 py-4 md:py-8">
       <router-view />
