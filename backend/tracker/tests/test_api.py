@@ -137,6 +137,21 @@ def test_stats_empty(auth):
     assert res.data["avg_pain"] is None
     assert res.data["median_pain"] is None
     assert res.data["second_dose_rate"] == 0
+    assert res.data["avg_episodes_per_month"] == 0
+    assert res.data["avg_episodes_per_week"] == 0
+
+
+def test_stats_default_range_from_first_episode(auth, user):
+    med = create_medicine(user)
+    today = timezone.localdate()
+    create_episode(user, med, occurred_on=today - timedelta(days=100), pain=3)
+    create_episode(user, med, occurred_on=today - timedelta(days=1), pain=6)
+
+    res = auth.get("/api/stats/")
+    data = res.data
+    assert data["episode_count"] == 2
+    assert data["filters"]["date_after"] == (today - timedelta(days=100)).isoformat()
+    assert data["filters"]["date_before"] == today.isoformat()
 
 
 def test_stats_math(auth, user):
@@ -158,7 +173,9 @@ def test_stats_math(auth, user):
     assert data["avg_pain"] == 6.0
     assert data["median_pain"] == 6.0
     assert data["avg_days_between"] == 6.0
-    assert data["current_headache_free_streak_days"] == 4
+    assert data["avg_episodes_per_month"] > 0
+    assert data["avg_episodes_per_week"] > 0
+    assert data["current_headache_free_streak_days"] == 10
     assert data["second_dose_rate"] == 0.5
     names = {row["name"]: row for row in data["medicines"]}
     assert names["Oki Task"]["episode_count"] == 2

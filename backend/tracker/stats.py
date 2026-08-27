@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import date, timedelta
+from datetime import date
+from math import ceil
 from statistics import median
 
 from django.db.models import Prefetch
@@ -14,9 +15,13 @@ def _today() -> date:
     return timezone.localdate()
 
 
-def default_range() -> tuple[date, date]:
+def default_range(qs) -> tuple[date, date]:
+    """From the first episode in the queryset to today. Today only if no episodes."""
     end = _today()
-    start = end - timedelta(days=365)
+    first = (
+        qs.order_by("occurred_on").values_list("occurred_on", flat=True).first()
+    )
+    start = first if first is not None else end
     return start, end
 
 
@@ -30,7 +35,7 @@ def apply_episode_filters(qs, params):
     date_after = parse_date(params.get("date_after"))
     date_before = parse_date(params.get("date_before"))
     if date_after is None and date_before is None:
-        date_after, date_before = default_range()
+        date_after, date_before = default_range(qs)
     if date_after:
         qs = qs.filter(occurred_on__gte=date_after)
     if date_before:
@@ -55,17 +60,17 @@ def apply_episode_filters(qs, params):
 
 
 def current_streak_days(user) -> int:
-    """Days from the last unfiltered episode to today (Europe/Rome). 0 if today has an episode."""
+    """Days from the first unfiltered episode to today (Europe/Rome). 0 if no episodes."""
     today = _today()
-    last = (
+    first = (
         Episode.objects.filter(user=user, occurred_on__lte=today)
-        .order_by("-occurred_on")
+        .order_by("occurred_on")
         .values_list("occurred_on", flat=True)
         .first()
     )
-    if last is None:
+    if first is None:
         return 0
-    return (today - last).days
+    return (today - first).days
 
 
 def longest_streak_days(dates: list[date], range_start: date | None, range_end: date | None) -> int:
@@ -86,14 +91,25 @@ def iso_week(d: date) -> str:
     return f"{iso.year}-W{iso.week:02d}"
 
 
+def months_between(start: date, end: date) -> int:
+    """Number of calendar months covered by [start, end], inclusive."""
+    return (end.year - start.year) * 12 + (end.month - start.month) + 1
+
+
+def weeks_in_range(start: date, end: date) -> int:
+    """Number of weeks covered by [start, end], rounded up, at least 1."""
+    return max(1, ceil((end - start).days / 7))
+
+
 def compute_stats(user, params) -> dict:
     """
     KPI + series for the authenticated user.
 
-    Default date range is the last 365 days when date_after/date_before are omitted.
-    current_headache_free_streak_days uses the unfiltered user calendar
-    (today minus last episode date, Europe/Rome).
+    Default date range is from the first episode to today when date_after/date_before
+    are omitted. current_headache_free_streak_days uses the unfiltered user calendar
+    (days from the first episode to today, Europe/Rome).
     longest_headache_free_streak_days is computed inside the filtered range.
+    avg_episodes_per_month / avg_episodes_per_week are computed over the effective range.
     """
     base = Episode.objects.filter(user=user)
     filtered, date_after, date_before = apply_episode_filters(
@@ -119,6 +135,13 @@ def compute_stats(user, params) -> dict:
 
     multi_dose = sum(1 for e in episodes if e.doses.count() >= 2)
     second_dose_rate = round(multi_dose / count, 4) if count else 0
+
+    avg_episodes_per_month = (
+        round(count / months_between(date_after, date_before), 2) if count else 0
+    )
+    avg_episodes_per_week = (
+        round(count / weeks_in_range(date_after, date_before), 2) if count else 0
+    )
 
     by_month: dict[str, int] = defaultdict(int)
     by_week: dict[str, int] = defaultdict(int)
@@ -181,6 +204,8 @@ def compute_stats(user, params) -> dict:
         "avg_pain": avg_pain,
         "median_pain": median_pain,
         "avg_days_between": avg_days_between,
+        "avg_episodes_per_month": avg_episodes_per_month,
+        "avg_episodes_per_week": avg_episodes_per_week,
         "current_headache_free_streak_days": current_streak_days(user),
         "longest_headache_free_streak_days": longest_streak_days(dates, date_after, date_before),
         "second_dose_rate": second_dose_rate,

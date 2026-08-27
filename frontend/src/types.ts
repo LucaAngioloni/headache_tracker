@@ -73,6 +73,8 @@ export type Stats = {
   avg_pain: number | null;
   median_pain: number | null;
   avg_days_between: number | null;
+  avg_episodes_per_month: number;
+  avg_episodes_per_week: number;
   current_headache_free_streak_days: number;
   longest_headache_free_streak_days: number;
   second_dose_rate: number;

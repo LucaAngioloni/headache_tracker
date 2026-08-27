@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import DateInput from "@/components/DateInput.vue";
 import type { EpisodeFilters, Medicine, Trigger } from "@/types";
@@ -18,6 +18,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
+const open = ref(false);
+
 const local = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -30,11 +32,23 @@ function patch(partial: Partial<EpisodeFilters>) {
 
 <template>
   <form
-    class="grid gap-3 rounded-2xl border border-[var(--line)] bg-[var(--card)] p-3"
+    class="rounded-2xl border border-[var(--line)] bg-[var(--card)]"
     @submit.prevent="emit('apply')"
   >
-    <p class="text-sm font-medium">{{ t("common.filters") }}</p>
-    <div class="grid grid-cols-2 gap-2">
+    <button
+      type="button"
+      class="flex w-full items-center justify-between p-3 text-left"
+      @click="open = !open"
+    >
+      <span class="text-sm font-medium">{{ t("common.filters") }}</span>
+      <span
+        class="text-sm text-[var(--muted)] transition-transform duration-200"
+        :class="{ 'rotate-90': open }"
+        aria-hidden="true"
+      >›</span>
+    </button>
+    <div v-if="open" class="grid gap-3 px-3 pb-3">
+      <div class="grid grid-cols-2 gap-2">
       <label class="grid gap-1 text-xs text-[var(--muted)]">
         {{ t("common.from") }}
         <DateInput
@@ -151,6 +165,7 @@ function patch(partial: Partial<EpisodeFilters>) {
       >
         {{ t("common.reset") }}
       </button>
+      </div>
     </div>
   </form>
 </template>
