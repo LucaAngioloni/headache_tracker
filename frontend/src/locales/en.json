@@ -11,6 +11,11 @@
     "triggers": "Triggers",
     "logout": "Log out"
   },
+  "version": {
+    "frontend": "App version",
+    "backend": "Backend version",
+    "unknown": "Unknown"
+  },
   "auth": {
     "login": "Log in",
     "username": "Username",

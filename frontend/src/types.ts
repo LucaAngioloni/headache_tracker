@@ -57,6 +57,10 @@ export type Me = {
   username: string;
 };
 
+export type AppVersion = {
+  version: string;
+};
+
 export type EpisodeFilters = {
   date_after?: string;
   date_before?: string;

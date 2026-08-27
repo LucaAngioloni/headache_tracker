@@ -36,7 +36,7 @@ repos:
         files: ^frontend/
       - id: frontend-format
         name: prettier (frontend)
-        entry: pnpm --dir frontend format:check
+        entry: pnpm --dir frontend format
         language: system
         pass_filenames: false
         files: ^frontend/

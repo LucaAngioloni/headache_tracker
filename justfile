@@ -79,6 +79,10 @@ collectstatic:
 requirements:
   @./backend/requirements/upgrade.sh
 
+bump_version version:
+  @echo "Bumping app version to {{version}}..."
+  @python3 backend/bump_version.py {{version}}
+
 run *args:
   @echo "Running command in django container..."
   @docker compose run --rm django python manage.py {{args}}

@@ -19,9 +19,7 @@ services:
     restart: unless-stopped
 
   django:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ${DJANGO_IMAGE:-ghcr.io/lucaangioloni/headache_tracker/backend:latest}
     env_file:
       - .env
     environment:
@@ -37,9 +35,7 @@ services:
     restart: unless-stopped
 
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
+    image: ${CADDY_IMAGE:-ghcr.io/lucaangioloni/headache_tracker/frontend:latest}
     ports:
       - "80:80"
       - "443:443"
